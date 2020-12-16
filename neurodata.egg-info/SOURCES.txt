@@ -1,0 +1,10 @@
+README.md
+setup.cfg
+setup.py
+neurodata/__init__.py
+neurodata/load_data.py
+neurodata.egg-info/PKG-INFO
+neurodata.egg-info/SOURCES.txt
+neurodata.egg-info/dependency_links.txt
+neurodata.egg-info/requires.txt
+neurodata.egg-info/top_level.txt
