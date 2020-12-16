@@ -15,8 +15,8 @@ https://arxiv.org/abs/2009.01527
 This code can now be installed as a package and is meant to be eventually shared in pip.
 To clone and install locally the package, run 
 ~~~
-git clone https://github.com/kclip/neuro-data 
-cd neuro-data/ 
+git clone https://github.com/kclip/neurodata 
+cd neurodata/ 
 python -m pip install -e . 
 ~~~
 
