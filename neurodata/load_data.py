@@ -92,10 +92,10 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000, ds=1, c
 
         bucket_start = bucket_end
 
-    return torch.FloatTensor(data), torch.FloatTensor(make_outputs_binary(label, T, classes))
+    return torch.FloatTensor(data), torch.FloatTensor(make_output_from_labels(label, T, classes, size))
 
 
-def create_dataloader(path, batch_size=32, size=[1], classes=[0], sample_length_train=2e6, sample_length_test=2e6, dt=1000, polarity=True, ds=1, **dl_kwargs):
+def create_dataloader(path, batch_size=32, size=[1], classes=[0], sample_length_train=2e6, sample_length_test=2e6, dt=1000, polarity=True, ds=1, shuffle_test=False, **dl_kwargs):
     train_dataset = NeuromorphicDataset(path,
                                         train=True,
                                         size=size,
@@ -118,6 +118,6 @@ def create_dataloader(path, batch_size=32, size=[1], classes=[0], sample_length_
                                        polarity=polarity
                                        )
 
-    test_dl = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, **dl_kwargs)
+    test_dl = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=shuffle_test, **dl_kwargs)
 
     return train_dl, test_dl

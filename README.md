@@ -2,14 +2,11 @@
 Code for preprocessing and loading data from neuromorphic datasets.
 Part of this code has been used for the following works:
 
-N. Skatchkovsky, H. Jang, and O. Simeone, Federated Neuromorphic Learning of Spiking Neural Networks for Low-Power Edge Intelligence, accepted to IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), 2020.
-https://arxiv.org/abs/1910.09594
-
 H. Jang, N. Skatchkovsky, and O. Simeone, VOWEL: A Local Online Learning Rule for Recurrent Networks of Probabilistic Spiking Winner-Take-All Circuits, to be presented at ICPR 2020
 https://arxiv.org/abs/2004.09416
 
-N. Skatchkovsky, H. Jang, and O. Simeone, End-to-End Learning of Neuromorphic Wireless Systems for Low-Power Edge Artificial Intelligence, accepted to Asilomar 2020
-https://arxiv.org/abs/2009.01527
+H. Jang, N. Skatchkovsky, and O. Simeone, BiSNN: Training Spiking Neural Networks with Binary Weights via Bayesian Learning, submitted for conference publication, https://arxiv.org/abs/2012.08300
+
 
 # Installing 
 This code can now be installed as a package and is meant to be eventually shared in pip.
@@ -44,4 +41,4 @@ To add your own datasets, save them as an .hdf5 file respecting the current stru
 ` /test/n_examples_test (Array) [example_length, 4] ` # one array per test example <br />
 
 
-
+Author: Nicolas Skatchkovsky
