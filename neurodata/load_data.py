@@ -14,7 +14,8 @@ class NeuromorphicDataset(data.Dataset):
             sample_length=2e6,
             dt=1000,
             ds=1,
-            polarity=True
+            polarity=True,
+            all_classes=[i for i in range(10)]
     ):
 
         self.path = path
@@ -25,6 +26,7 @@ class NeuromorphicDataset(data.Dataset):
         self.T = int(sample_length / dt)
         self.classes = classes
         self.n_classes = len(classes)
+        self.all_classes = all_classes
         self.ds = ds
         self.polarity = polarity
 
@@ -50,7 +52,7 @@ class NeuromorphicDataset(data.Dataset):
         idx = self.valid_idx[key]
         dataset = tables.open_file(self.path)
         data, target = get_batch_example(dataset.root[self.group], idx, T=self.T, sample_length=self.sample_length, ds=self.ds,
-                                         classes=self.classes, size=self.size, dt=self.dt, x_max=self.x_max, polarity=self.polarity)
+                                         classes=self.all_classes, size=self.size, dt=self.dt, x_max=self.x_max, polarity=self.polarity)
         dataset.close()
 
         return data, target
@@ -92,7 +94,7 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000, ds=1, c
 
         bucket_start = bucket_end
 
-    return torch.FloatTensor(data), torch.FloatTensor(make_output_from_labels(label, T, classes, size))
+    return torch.FloatTensor(data), make_output_from_labels(label, T, classes, size)
 
 
 def create_dataloader(path, batch_size=32, size=[1], classes=[0], sample_length_train=2e6, sample_length_test=2e6, dt=1000, polarity=True, ds=1, shuffle_test=False, **dl_kwargs):

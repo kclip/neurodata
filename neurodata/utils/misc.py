@@ -30,17 +30,8 @@ def make_output_from_labels(labels, T, classes, size):
         return make_outputs_binary(labels, T, classes)
 
 def make_outputs_binary(labels, T, classes):
-    mapping = {classes[i]: i for i in range(len(classes))}
-
-    if hasattr(labels, 'len'):
-        out = torch.zeros([len(labels), len(classes), T])
-        out[[i for i in range(len(labels))], [mapping[lbl] for lbl in labels], :] = 1
-    else:
-        out = torch.zeros([len(classes), T])
-        mapping = {classes[i]: i for i in range(len(classes))}
-        out[mapping[labels], :] = 1
-    return out
-
+    return torch.nn.functional.one_hot(torch.Tensor([labels]).type(torch.long),
+                                       num_classes=len(classes)).transpose(0, 1).repeat(1, T)
 
 def make_outputs_multivalued(labels, T, classes):
     mapping = {classes[i]: i for i in range(len(classes))}
@@ -52,7 +43,7 @@ def make_outputs_multivalued(labels, T, classes):
         out = torch.zeros([len(classes), 2, T])
         mapping = {classes[i]: i for i in range(len(classes))}
         out[mapping[labels], 0, :] = 1
-    return out
+    return torch.Tensor(out)
 
 
 def find_first(a, tgt):
