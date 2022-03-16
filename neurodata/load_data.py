@@ -97,7 +97,10 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000, ds=1, c
     return torch.FloatTensor(data), make_output_from_labels(label, T, classes, size)
 
 
-def create_dataloader(path, batch_size=32, size=[1], classes=[0], sample_length_train=2e6, sample_length_test=2e6, dt=1000, polarity=True, ds=1, shuffle_test=False, **dl_kwargs):
+def create_dataloader(path, batch_size=32, size=[1], classes=[0],
+                      sample_length_train=2e6, sample_length_test=2e6, dt=1000,
+                      polarity=True, ds=1,
+                      shuffle_train=True, shuffle_test=False, **dl_kwargs):
     train_dataset = NeuromorphicDataset(path,
                                         train=True,
                                         size=size,
@@ -108,7 +111,8 @@ def create_dataloader(path, batch_size=32, size=[1], classes=[0], sample_length_
                                         polarity=polarity
                                         )
 
-    train_dl = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, **dl_kwargs)
+    train_dl = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
+                                           shuffle=shuffle_train, **dl_kwargs)
 
     test_dataset = NeuromorphicDataset(path,
                                        train=False,
@@ -120,6 +124,7 @@ def create_dataloader(path, batch_size=32, size=[1], classes=[0], sample_length_
                                        polarity=polarity
                                        )
 
-    test_dl = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=shuffle_test, **dl_kwargs)
+    test_dl = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size,
+                                          shuffle=shuffle_test, **dl_kwargs)
 
     return train_dl, test_dl
