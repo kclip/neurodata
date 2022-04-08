@@ -150,19 +150,20 @@ def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id'):
 
     print("processing training data...")
     last_idx_train = 0
-    for file_d in fns_train:
-        events, labels = aedat_to_events(file_d, dtype)
-
-        if labels is not None:
-            for i in range(len(labels)):
-                hdf5_file.create_earray(where=hdf5_file.root.train,
-                                        name=str(i + last_idx_train),
-                                        atom=tables.Atom.from_dtype(
-                                            events[i].dtype),
-                                        obj=events[i])
-
-            train_labels_array.append(labels)
-            last_idx_train += len(labels)
+    # for file_d in fns_train:
+    #     events, labels = aedat_to_events(file_d, dtype)
+    #
+    #     if labels is not None:
+    #         for i in range(len(labels)):
+    #             hdf5_file.create_earray(where=hdf5_file.root.train,
+    #                                     name=str(i + last_idx_train),
+    #                                     atom=tables.Atom.from_dtype(
+    #                                         events[i].dtype),
+    #                                     obj=events[i])
+    #
+    #         train_labels_array.append(labels)
+    #         last_idx_train += len(labels)
+    #     print(labels)
 
     hdf5_file.create_group(where=hdf5_file.root, name='test')
     test_labels_array = hdf5_file.create_earray(where=hdf5_file.root.test,
@@ -183,6 +184,7 @@ def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id'):
                                         events[i].dtype),
                                     obj=events[i])
 
+        print(labels)
         test_labels_array.append(labels)
         last_idx_test += len(labels)
 
@@ -218,7 +220,7 @@ def create_data(path_to_hdf5='../data/mnist_dvs_events.hdf5',
         print('Either an hdf5 file or DvsGestures data must be specified')
 
 home = r"C:\Users\K1804053\OneDrive - King's College London\PycharmProjects"
-create_data(path_to_hdf5=home + r"\datasets\DvsGesture\dvs_gestures_events_both.hdf5",
+create_data(path_to_hdf5=home + r"\datasets\DvsGesture\dvs_gestures_events_test.hdf5",
             path_to_data=home + r"\datasets\DvsGesture",
             split='both'
             )
