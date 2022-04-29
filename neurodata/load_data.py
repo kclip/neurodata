@@ -25,7 +25,7 @@ class NeuromorphicDataset(data.Dataset):
         self.sample_length = sample_length
         self.T = int(sample_length / dt)
         self.classes = classes
-        if n_classes > 0:
+        if n_classes == 0:
             self.n_classes = len(classes)
         else:
             self.n_classes = n_classes
