@@ -105,6 +105,7 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000,
         bucket_start = bucket_end
 
     return torch.FloatTensor(data), make_output_from_labels(label, T,
+                                                            self.n_classes,
                                                             classes, size)
 
 

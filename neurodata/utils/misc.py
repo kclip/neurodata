@@ -23,15 +23,15 @@ def find_indices_for_labels(hdf5_group, labels):
     return np.hstack(res)
 
 
-def make_output_from_labels(labels, T, classes, size):
+def make_output_from_labels(labels, T, n_classes, classes, size):
     if len(size) == 2:
         return make_outputs_multivalued(labels, T, classes)
     else:
-        return make_outputs_binary(labels, T, classes)
+        return make_outputs_binary(labels, T, n_classes, classes)
 
-def make_outputs_binary(labels, T, classes):
+def make_outputs_binary(labels, T, n_classes, classes):
     return torch.nn.functional.one_hot(torch.Tensor([labels]).type(torch.long),
-                                       num_classes=len(classes)).transpose(0, 1).repeat(1, T)
+                                       num_classes=n_classes).transpose(0, 1).repeat(1, T)
 
 def make_outputs_multivalued(labels, T, classes):
     mapping = {classes[i]: i for i in range(len(classes))}
