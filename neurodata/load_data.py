@@ -58,6 +58,7 @@ class NeuromorphicDataset(data.Dataset):
                                          T=self.T,
                                          sample_length=self.sample_length,
                                          ds=self.ds, classes=self.classes,
+                                         n_classes=self.n_classes,
                                          size=self.size, dt=self.dt,
                                          x_max=self.x_max,
                                          polarity=self.polarity)
@@ -67,7 +68,8 @@ class NeuromorphicDataset(data.Dataset):
 
 
 def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000,
-                      ds=1, classes=[0], size=[1, 26, 26], x_max=1,
+                      ds=1, classes=[0], n_classes=0,
+                      size=[1, 26, 26], x_max=1,
                       polarity=True):
     data = np.zeros([T] + size, dtype='float')
     label = hdf5_group.labels[idx]
@@ -105,7 +107,7 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000,
         bucket_start = bucket_end
 
     return torch.FloatTensor(data), make_output_from_labels(label, T,
-                                                            self.n_classes,
+                                                            n_classes,
                                                             classes, size)
 
 
