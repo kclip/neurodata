@@ -131,10 +131,11 @@ def aedat_to_events(filename, type='uint32'):
     return clipped_events, labels[:, 0].astype('uint8')
 
 
-def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id'):
+def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id',
+                       split_idx=24):
     if split == 'id':
-        fns_train = gather_aedat(path_to_data, 1, 24)
-        fns_test = gather_aedat(path_to_data, 24, 30)
+        fns_train = gather_aedat(path_to_data, 1, split_idx)
+        fns_test = gather_aedat(path_to_data, split_idx, 30)
     elif split == 'light':
         fns_train, fns_test = gather_aedat_by_light(path_to_data)
     else:
@@ -150,20 +151,18 @@ def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id'):
 
     print("processing training data...")
     last_idx_train = 0
-    # for file_d in fns_train:
-    #     events, labels = aedat_to_events(file_d, dtype)
-    #
-    #     if labels is not None:
-    #         for i in range(len(labels)):
-    #             hdf5_file.create_earray(where=hdf5_file.root.train,
-    #                                     name=str(i + last_idx_train),
-    #                                     atom=tables.Atom.from_dtype(
-    #                                         events[i].dtype),
-    #                                     obj=events[i])
-    #
-    #         train_labels_array.append(labels)
-    #         last_idx_train += len(labels)
-    #     print(labels)
+    for file_d in fns_train:
+        events, labels = aedat_to_events(file_d, dtype)
+        if labels is not None:
+            for i in range(len(labels)):
+                hdf5_file.create_earray(where=hdf5_file.root.train,
+                                        name=str(i + last_idx_train),
+                                        atom=tables.Atom.from_dtype(
+                                            events[i].dtype),
+                                        obj=events[i])
+
+            train_labels_array.append(labels)
+            last_idx_train += len(labels)
 
     hdf5_file.create_group(where=hdf5_file.root, name='test')
     test_labels_array = hdf5_file.create_earray(where=hdf5_file.root.test,
@@ -175,18 +174,16 @@ def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id'):
     print("processing testing data...")
     last_idx_test = 0
     for file_d in fns_test:
-        events, labels = aedat_to_events(file_d, dtype)
-
-        for i in range(len(labels)):
-            hdf5_file.create_earray(where=hdf5_file.root.test,
-                                    name=str(i + last_idx_test),
-                                    atom=tables.Atom.from_dtype(
-                                        events[i].dtype),
-                                    obj=events[i])
-
-        print(labels)
-        test_labels_array.append(labels)
-        last_idx_test += len(labels)
+            events, labels = aedat_to_events(file_d, dtype)
+            if labels is not None:
+                for i in range(len(labels)):
+                    hdf5_file.create_earray(where=hdf5_file.root.test,
+                                            name=str(i + last_idx_test),
+                                            atom=tables.Atom.from_dtype(
+                                                events[i].dtype),
+                                            obj=events[i])
+                test_labels_array.append(labels)
+                last_idx_test += len(labels)
 
     stats_train_data = np.array([len(hdf5_file.root.train.labels[:]), 128])
     stats_train_label = np.array([len(hdf5_file.root.train.labels[:]), 11])
@@ -210,17 +207,18 @@ def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id'):
 
 
 def create_data(path_to_hdf5='../data/mnist_dvs_events.hdf5',
-                path_to_data=None, dtype='uint32', split='id'):
+                path_to_data=None, dtype='uint32', split='id', split_idx=24):
     if os.path.exists(path_to_hdf5):
         print("File {} exists: not re-converting data".format(path_to_hdf5))
     elif (not os.path.exists(path_to_hdf5)) & (path_to_data is not None):
         print("converting DvsGestures to h5file")
-        create_events_hdf5(path_to_hdf5, path_to_data, dtype, split)
+        create_events_hdf5(path_to_hdf5, path_to_data, dtype, split, split_idx)
     else:
         print('Either an hdf5 file or DvsGestures data must be specified')
 
 home = r"C:\Users\K1804053\OneDrive - King's College London\PycharmProjects"
-create_data(path_to_hdf5=home + r"\datasets\DvsGesture\dvs_gestures_events_test.hdf5",
+create_data(path_to_hdf5=home + r"\datasets\DvsGesture\dvs_gestures_events_small_.hdf5",
             path_to_data=home + r"\datasets\DvsGesture",
-            split='both'
+            split='id',
+            split_idx=10
             )

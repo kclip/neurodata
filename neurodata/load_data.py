@@ -11,6 +11,7 @@ class NeuromorphicDataset(data.Dataset):
             train=True,
             size=[1],
             classes=[0],
+            n_classes=0,
             sample_length=2e6,
             dt=1000,
             ds=1,
@@ -24,7 +25,10 @@ class NeuromorphicDataset(data.Dataset):
         self.sample_length = sample_length
         self.T = int(sample_length / dt)
         self.classes = classes
-        self.n_classes = len(classes)
+        if n_classes > 0:
+            self.n_classes = len(classes)
+        else:
+            self.n_classes = n_classes
         self.ds = ds
         self.polarity = polarity
 
@@ -104,7 +108,7 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000,
                                                             classes, size)
 
 
-def create_dataloader(path, batch_size=32, size=[1], classes=[0],
+def create_dataloader(path, batch_size=32, size=[1], classes=[0], n_classes=0,
                       sample_length_train=2e6, sample_length_test=2e6, dt=1000,
                       polarity=True, ds=1,
                       shuffle_train=True, shuffle_test=False, **dl_kwargs):
@@ -112,6 +116,7 @@ def create_dataloader(path, batch_size=32, size=[1], classes=[0],
                                         train=True,
                                         size=size,
                                         classes=classes,
+                                        n_classes=n_classes,
                                         sample_length=sample_length_train,
                                         dt=dt,
                                         ds=ds,
@@ -125,6 +130,7 @@ def create_dataloader(path, batch_size=32, size=[1], classes=[0],
                                        train=False,
                                        size=size,
                                        classes=classes,
+                                       n_classes=n_classes,
                                        sample_length=sample_length_test,
                                        dt=dt,
                                        ds=ds,
