@@ -71,7 +71,7 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000,
                       ds=1, classes=[0], n_classes=0,
                       size=[1, 26, 26], x_max=1,
                       polarity=True):
-    data = np.zeros([T] + size, dtype='float')
+    data = np.zeros(size + [T], dtype='float')
     label = hdf5_group.labels[idx]
 
     addrs = hdf5_group[str(idx)]
@@ -91,14 +91,14 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000,
 
         try:
             if len(size) == 3:
-                data[i, pol, x, y] = 1.
+                data[pol, x, y, i] = 1.
             elif len(size) == 2:
-                data[i, pol, (x * x_max + y).astype(int)] = 1.
+                data[pol, (x * x_max + y).astype(int), i] = 1.
             elif len(size) == 1:
                 if polarity:
-                    data[i, (pol + 2 * (x * x_max + y)).astype(int)] = 1.
+                    data[(pol + 2 * (x * x_max + y)).astype(int), i] = 1.
                 else:
-                    data[i, (x * x_max + y).astype(int)] = 1.
+                    data[(x * x_max + y).astype(int), i] = 1.
         except:
             i_max = np.argmax((pol + 2 * (x * x_max + y)))
             print(x[i_max], y[i_max], pol[i_max])
@@ -106,9 +106,7 @@ def get_batch_example(hdf5_group, idx, T=80, sample_length=2e6, dt=1000,
 
         bucket_start = bucket_end
 
-    return torch.FloatTensor(data), make_output_from_labels(label, T,
-                                                            n_classes,
-                                                            classes, size)
+    return torch.FloatTensor(data), label
 
 
 def create_dataloader(path, batch_size=32, size=[1], classes=[0], n_classes=0,

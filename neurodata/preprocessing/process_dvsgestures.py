@@ -174,16 +174,16 @@ def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id',
     print("processing testing data...")
     last_idx_test = 0
     for file_d in fns_test:
-            events, labels = aedat_to_events(file_d, dtype)
-            if labels is not None:
-                for i in range(len(labels)):
-                    hdf5_file.create_earray(where=hdf5_file.root.test,
-                                            name=str(i + last_idx_test),
-                                            atom=tables.Atom.from_dtype(
-                                                events[i].dtype),
-                                            obj=events[i])
-                test_labels_array.append(labels)
-                last_idx_test += len(labels)
+        events, labels = aedat_to_events(file_d, dtype)
+        if labels is not None:
+            for i in range(len(labels)):
+                hdf5_file.create_earray(where=hdf5_file.root.test,
+                                        name=str(i + last_idx_test),
+                                        atom=tables.Atom.from_dtype(
+                                            events[i].dtype),
+                                        obj=events[i])
+            test_labels_array.append(labels)
+            last_idx_test += len(labels)
 
     stats_train_data = np.array([len(hdf5_file.root.train.labels[:]), 128])
     stats_train_label = np.array([len(hdf5_file.root.train.labels[:]), 11])
@@ -204,7 +204,6 @@ def create_events_hdf5(path_to_hdf5, path_to_data, dtype='uint32', split='id',
     hdf5_file.create_array(where=hdf5_file.root.stats, name='test_label',
                            atom=tables.Atom.from_dtype(stats_test_label.dtype),
                            obj=stats_test_label)
-
 
 def create_data(path_to_hdf5='../data/mnist_dvs_events.hdf5',
                 path_to_data=None, dtype='uint32', split='id', split_idx=24):
